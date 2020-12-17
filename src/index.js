@@ -1,7 +1,12 @@
-import './styles.css';
-import fetchArticles from "./js/fetch-articles";
+import newsService from "./js/news-service";
 import updateArticlesMarkup from "./js/update-articles-markup";
+import LoadMoreBtn from "./js/components/load-more-button";
 import refs from "./js/refs";
+import './styles.css';
+
+const loadMoreBtn = new LoadMoreBtn('button[data-action="load-more"]');
+
+// https://spin.js.org - Библиотека спиннеров
 
 /*
 
@@ -211,16 +216,35 @@ refs.searchForm.addEventListener("submit", event => {
 // Создаем js/fetch-articles.js
 // Создаем update-articles-markup.js
 
-refs.searchForm.addEventListener("submit", event => {
+
+
+refs.searchForm.addEventListener("submit", searchFormSubmitHanbler);
+loadMoreBtn.refs.button.addEventListener("click", fetchArticles);
+
+function searchFormSubmitHanbler(event) {
    event.preventDefault();
 
    const form = event.currentTarget;
-   const inputValue = form.elements.query.value
+   newsService.query = form.elements.query.value
 
-   refs.articlesContainer.innerHTML = "";
+   clearArticlesContainer();
+   newsService.resetPage();
+   fetchArticles();
    form.reset();
+}
 
-   fetchArticles(inputValue).then(updateArticlesMarkup);
-});
+function fetchArticles(){
+   loadMoreBtn.disable();
+
+   newsService.fetchArticles().then(articles => {
+         updateArticlesMarkup(articles);
+         loadMoreBtn.show()
+         loadMoreBtn.enable();
+      });
+};
+
+function clearArticlesContainer() {
+   refs.articlesContainer.innerHTML = "";
+}
 
 // */

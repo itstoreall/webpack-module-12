@@ -1,6 +1,7 @@
-const refs = {
-   articlesContainer: document.querySelector('.js-articles'),
-   searchForm: document.querySelector('.js-search-form')
-};
+const searchForm = document.querySelector('.js-search-form');
+const articlesContainer = document.querySelector('.js-articles');
 
-export default refs;
+export default {
+   searchForm,
+   articlesContainer
+};
